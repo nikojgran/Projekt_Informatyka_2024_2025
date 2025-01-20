@@ -12,7 +12,7 @@ bool DrawManager::InitializeResources(int* m_playerScore)
     InitializeBackgroundSprite();
     InitializeMenuContent();
     InitializePauseContent();
-    
+    InitializeChooseContent();
     InitializePlayer();
     InitializeBall();
 
@@ -268,38 +268,38 @@ void DrawManager::InitializePauseContent()
 
 void DrawManager::InitializeChooseContent()
 {
-    sf::Vector2u textureSize = m_chooseContent.lvl1pic.getSize();
-    sf::Vector2u textureSize = m_chooseContent.lvl2pic.getSize();
+    sf::Vector2u texture1Size = m_chooseContent.lvl1pic.getSize();
+    sf::Vector2u texture2Size = m_chooseContent.lvl2pic.getSize();
 
+    
     m_chooseContent.lvl1sprite.setTexture(m_chooseContent.lvl1pic);
-    m_chooseContent.lvl2sprite.setScale(
-        (static_cast<float>(m_windowSize.x) / textureSize.x)/4,
-        (static_cast<float>(m_windowSize.y) / textureSize.y) / 4);
+    m_chooseContent.lvl1sprite.setScale(0.25,0.25);
+    sf::FloatRect texture1Bounds = m_chooseContent.lvl1sprite.getLocalBounds();
+    m_chooseContent.lvl1sprite.setOrigin(
+        texture1Bounds.left + texture1Bounds.width / 2.0f,
+        texture1Bounds.top + texture1Bounds.height / 2.0f);
+    m_chooseContent.lvl1sprite.setPosition(320, 400);
 
     m_chooseContent.lvl2sprite.setTexture(m_chooseContent.lvl2pic);
-    m_chooseContent.lvl2sprite.setScale(
-        static_cast<float>(m_windowSize.x) / textureSize.x,
-        static_cast<float>(m_windowSize.y) / textureSize.y);
+    m_chooseContent.lvl2sprite.setScale(0.25, 0.25);
+    sf::FloatRect texture2Bounds = m_chooseContent.lvl2sprite.getLocalBounds();
+    m_chooseContent.lvl2sprite.setOrigin(
+        texture2Bounds.left + texture2Bounds.width / 2.0f,
+        texture2Bounds.top + texture2Bounds.height / 2.0f);
+    m_chooseContent.lvl2sprite.setPosition(960, 400);
 
-
-    SetupText(m_chooseContent.choose, m_font, "Poziom 1", 100, sf::Color::White, sf::Text::Bold, 640, 150);
-    SetupText(m_chooseContent.lvl1, m_font, "Poziom 1", 40, sf::Color::Blue, sf::Text::Bold, 320, 250);
-    SetupText(m_chooseContent.lvl2, m_font, "Poziom 2", 40, sf::Color::Red, sf::Text::Bold, 960, 250);
-    SetupText(m_chooseContent.exit, m_font, "1.Wyjdz do menu", 40, sf::Color::White, sf::Text::Bold, 320, 600);
+    SetupText(m_chooseContent.choose, m_font, "Wybierz poziom", 100, sf::Color::White, sf::Text::Bold, 640, 150);
+    SetupText(m_chooseContent.lvl1, m_font, "1.Poziom 1", 40, sf::Color::Blue, sf::Text::Bold, 320, 250);
+    SetupText(m_chooseContent.lvl2, m_font, "2.Poziom 2", 40, sf::Color::Red, sf::Text::Bold, 960, 250);
+    SetupText(m_chooseContent.exit, m_font, "3.Wyjdz do menu", 40, sf::Color::White, sf::Text::Bold, 320, 600);
 }
 
 void DrawManager::InitializeGameOver(int *m_playerScore)
 {
     SetupText(m_overContent.over, m_font, "GAME OVER", 100, sf::Color::Red, sf::Text::Bold, 640, 200);
-
     SetupText(m_overContent.score, m_font, "Score: " + std::to_string(*m_playerScore), 30, sf::Color::Blue, sf::Text::Regular, 640, 280);
-
     SetupText(m_overContent.exit, m_font, "1. Wyjdz do menu", 30, sf::Color::Blue, sf::Text::Regular, 640, 350);
 
-    
-
-
-    
     m_overContent.splash.setPointCount(20);
     m_overContent.splash.setPoint(0, sf::Vector2f(1243.f, 360.f));
     m_overContent.splash.setPoint(1, sf::Vector2f(1108.f, 512.f));
@@ -321,8 +321,6 @@ void DrawManager::InitializeGameOver(int *m_playerScore)
     m_overContent.splash.setPoint(17, sf::Vector2f(865.f, -150.f));
     m_overContent.splash.setPoint(18, sf::Vector2f(1127.f, -194.f));
     m_overContent.splash.setPoint(19, sf::Vector2f(1044.f, 28.f));
-
-
     
     sf::FloatRect splashBounds = m_overContent.splash.getLocalBounds();
     m_overContent.splash.setOrigin(
@@ -333,7 +331,6 @@ void DrawManager::InitializeGameOver(int *m_playerScore)
     m_overContent.splash.setFillColor(sf::Color::Yellow);
     m_overContent.splash.setOutlineColor(sf::Color::Red);
     m_overContent.splash.setOutlineThickness(60);
-
 }
 
 void DrawManager::InitializeGameWon(int* m_playerScore)
@@ -401,7 +398,7 @@ void DrawManager::InitializePlayer()
     m_gameContent.m_player = sf::RectangleShape(sf::Vector2f(120, 20));
     m_gameContent.m_player.setFillColor(sf::Color::Green);
     m_gameContent.m_player.setPosition(640, 650);
-    m_gameContent.m_player_velocity = 15;
+    m_gameContent.m_player_velocity = 10;
 }
 
 void DrawManager::InitializeBall()
@@ -450,21 +447,7 @@ void DrawManager::LoadLevel(int* levelIndex)
 bool DrawManager::WonGame(int *m_levelIndex)
 {
     if (m_gameContent.m_blocks.empty()) {
-        if (*m_levelIndex + 1 < 2) {
-            
-            *m_levelIndex = *m_levelIndex + 1;// Wczytaj nastêpny poziom
-            std::cout << "Wczytujê poziom: " << *m_levelIndex << std::endl;
-            LoadLevel(m_levelIndex);
-
-            return true;
-        }
-
-        else {
-             *m_levelIndex = 1;
-            std::cout << "Wczytujê poziom: " << *m_levelIndex << std::endl;
-            
-            return true;
-        }
+        return true;
     }
     return false;
 }

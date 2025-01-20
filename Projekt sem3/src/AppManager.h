@@ -21,6 +21,7 @@ private:
     void HandleOverState(sf::Event* event);
     void HandleNickState(sf::Event* event);
     void HandleWonState(sf::Event* event);
+    void HandleChooseState(sf::Event* event);
     void SaveScoreToFile();
     void LoadScoresFromFile();
     void ExitApp();

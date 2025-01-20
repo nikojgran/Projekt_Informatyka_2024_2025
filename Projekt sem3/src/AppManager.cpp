@@ -63,8 +63,6 @@ void AppManager::DispatchState()
         case AppState::GAME_OVER:
             m_drawManager.InitializeGameOver(&m_playerScore);
             m_drawManager.DrawGameOver(&m_window);
-            m_drawManager.InitializePlayer();
-            m_drawManager.InitializeBall();
             m_levelIndex = 1;
             m_levelLoaded = false;
             break;
@@ -76,6 +74,10 @@ void AppManager::DispatchState()
         case AppState::WON:
             m_drawManager.InitializeGameWon(&m_playerScore);
             m_drawManager.DrawGameWon(&m_window);
+            break;
+
+        case AppState::CHOOSE:
+            m_drawManager.DrawChoose(&m_window);
             break;
     }
 }
@@ -113,6 +115,9 @@ void AppManager::DispatchEvent(sf::Event* event)
             break;
         case AppState::WON:
             HandleWonState(event);
+            break;
+        case AppState::CHOOSE:
+            HandleChooseState(event);
             break;
     }
 }
@@ -164,6 +169,7 @@ void AppManager::HandleOverState(sf::Event* event)
 {
     if (event->type == sf::Event::KeyPressed) {
         if (event->key.code == sf::Keyboard::Num1) {
+            m_playerScore = 0;
             m_appState = AppState::MENU;
         }
         
@@ -186,18 +192,42 @@ void AppManager::HandleNickState(sf::Event* event)
 
     if (event->type == sf::Event::KeyPressed) {
         if (event->key.code == sf::Keyboard::Enter) {
-            m_appState = AppState::GAME;
+            m_appState = AppState::CHOOSE;
+        }
+
+
+        if (event->key.code == sf::Keyboard::Escape) {
+            m_appState = AppState::NICK;
         }
     }
+   
 }
 
 void AppManager::HandleWonState(sf::Event* event)
 {
     if (event->type == sf::Event::KeyPressed) {
         if (event->key.code == sf::Keyboard::Num1) {
+            m_playerScore = 0;
             m_appState = AppState::MENU;
         }
 
+    }
+}
+
+void AppManager::HandleChooseState(sf::Event* event)
+{
+    if (event->type == sf::Event::KeyPressed) {
+        if (event->key.code == sf::Keyboard::Num1) {
+            m_levelIndex = 1;
+            m_appState = AppState::GAME;
+        }
+        else if (event->key.code == sf::Keyboard::Num2) {
+            m_levelIndex = 2;
+            m_appState = AppState::GAME;
+        }
+        else if (event->key.code == sf::Keyboard::Num3) {
+            m_appState = AppState::MENU;
+        }
     }
 }
 
