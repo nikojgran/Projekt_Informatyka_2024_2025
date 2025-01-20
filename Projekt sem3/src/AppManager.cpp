@@ -4,11 +4,12 @@ AppManager::AppManager() :
     m_window(sf::VideoMode(1280, 720), "Game"),
     m_drawManager(m_window.getSize()),
     m_appState(AppState::MENU),
-    m_levelIndex(1){}
+    m_levelIndex(2),
+    m_playerScore(0){}
 
 void AppManager::StartApp()
 {
-    if (!m_drawManager.InitializeResources())
+    if (!m_drawManager.InitializeResources(&m_playerScore))
     {
         return;
     }
@@ -33,6 +34,7 @@ void AppManager::DispatchState()
         case AppState::MENU:
             m_drawManager.DrawMenu(&m_window);
             break;
+
         case AppState::GAME:
             m_drawManager.DrawPlayer(&m_window);
             m_drawManager.DrawBall(&m_window);
@@ -43,22 +45,37 @@ void AppManager::DispatchState()
             m_drawManager.DrawBlocks(&m_window);
                 
             
-            if (m_drawManager.MoveBall(&m_window)) {
+            if (m_drawManager.MoveBall(&m_window, &m_playerScore)) {
                 m_appState = AppState::GAME_OVER;
             }
             if (m_drawManager.WonGame(&m_levelIndex)) {
-                m_appState = AppState::GAME_OVER;
+                m_appState = AppState::WON;
+                m_drawManager.LoadLevel(&m_levelIndex);
+                
             }
             
             break;
+
         case AppState::PAUSE:
             m_drawManager.DrawPause(&m_window);
             break;
+
         case AppState::GAME_OVER:
+            m_drawManager.InitializeGameOver(&m_playerScore);
             m_drawManager.DrawGameOver(&m_window);
             m_drawManager.InitializePlayer();
             m_drawManager.InitializeBall();
+            m_levelIndex = 1;
             m_levelLoaded = false;
+            break;
+
+        case AppState::NICK:
+            m_drawManager.DrawNickInput(&m_window, &m_currentNick);
+            break;
+
+        case AppState::WON:
+            m_drawManager.InitializeGameWon(&m_playerScore);
+            m_drawManager.DrawGameWon(&m_window);
             break;
     }
 }
@@ -91,7 +108,12 @@ void AppManager::DispatchEvent(sf::Event* event)
         case AppState::GAME_OVER:
             HandleOverState(event);
             break;
-
+        case AppState::NICK:
+            HandleNickState(event);
+            break;
+        case AppState::WON:
+            HandleWonState(event);
+            break;
     }
 }
 
@@ -99,7 +121,8 @@ void AppManager::HandleMenuState(sf::Event* event)
 {
     if (event->type == sf::Event::KeyPressed) {
         if (event->key.code == sf::Keyboard::Num1) {
-            m_appState = AppState::GAME;
+            m_appState = AppState::NICK;
+
         }
         else if (event->key.code == sf::Keyboard::Num2) {
             ExitApp();
@@ -147,6 +170,37 @@ void AppManager::HandleOverState(sf::Event* event)
     }
 
 }
+
+void AppManager::HandleNickState(sf::Event* event)
+{
+    if (event->type == sf::Event::TextEntered) {
+        if (event->text.unicode < 128) { 
+            if (event->text.unicode == 8 && !m_currentNick.empty()) {
+                m_currentNick.pop_back(); 
+            }
+            else if (event->text.unicode != 8) {
+                m_currentNick += static_cast<char>(event->text.unicode); 
+            }
+        }
+    }
+
+    if (event->type == sf::Event::KeyPressed) {
+        if (event->key.code == sf::Keyboard::Enter) {
+            m_appState = AppState::GAME;
+        }
+    }
+}
+
+void AppManager::HandleWonState(sf::Event* event)
+{
+    if (event->type == sf::Event::KeyPressed) {
+        if (event->key.code == sf::Keyboard::Num1) {
+            m_appState = AppState::MENU;
+        }
+
+    }
+}
+
 
 void AppManager::ExitApp()
 {

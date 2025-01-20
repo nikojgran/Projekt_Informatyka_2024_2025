@@ -8,6 +8,7 @@ class AppManager
 public:
     AppManager();
     void StartApp();
+    
 private:
     void DispatchState();
     bool m_levelLoaded = false;
@@ -18,19 +19,36 @@ private:
     void HandleGameState(sf::Event* event);
     void HandlePauseState(sf::Event* event);
     void HandleOverState(sf::Event* event);
+    void HandleNickState(sf::Event* event);
+    void HandleWonState(sf::Event* event);
+    void SaveScoreToFile();
+    void LoadScoresFromFile();
     void ExitApp();
 
     enum class AppState {
         MENU,
+        NICK,
+        CHOOSE,
         GAME,
+        LEADERBOARD,
         PAUSE,
         HELP,
-        GAME_OVER
+        GAME_OVER,
+        WON
+    };
+    
+    struct PlayerScore {
+        std::string nick;
+        int score;
     };
 
     sf::RenderWindow m_window;
     int m_levelIndex;
     DrawManager m_drawManager;
     AppState m_appState;
+    std::string m_playerNick;
+    int m_playerScore;
+    std::string m_currentNick;
+    std::vector<PlayerScore> m_leaderboard;
 };
 
