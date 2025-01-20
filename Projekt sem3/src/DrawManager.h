@@ -19,10 +19,12 @@ public:
     bool InitializeResources(int* m_playerScore);
     void DrawMenu(sf::RenderWindow* window);
     void DrawPause(sf::RenderWindow* window);
+    void DrawGameContent(sf::RenderWindow* window);
     void DrawGameOver(sf::RenderWindow* window);
     void DrawGameWon(sf::RenderWindow* window);
     void DrawPlayer(sf::RenderWindow* window);
     void DrawChoose(sf::RenderWindow* window);
+    void DrawHelp(sf::RenderWindow* window);
     void MovePlayerLeft(sf::RenderWindow* window);
     void MovePlayerRight(sf::RenderWindow* window);
     void DrawBall(sf::RenderWindow* window);
@@ -38,6 +40,7 @@ public:
     bool WonGame(int* m_levelIndex);
     void InitializeGameOver(int* m_playerScore);
     void InitializeGameWon(int* m_playerScore);
+    void InitializeGameContent(int* m_playerScore, int* m_levelIndex);
 
 private:
     bool LoadFont();
@@ -48,7 +51,7 @@ private:
         sf::Text::Style style, float xPos, float yPos);
     void InitializeBackgroundSprite();
     void InitializeMenuContent();
-    void InitializeGameContent();
+    void InitializeHelpContent();
     void InitializePauseContent();
     void InitializeChooseContent();
     
@@ -96,6 +99,10 @@ private:
         sf::Texture lvl1pic, lvl2pic;
         sf::Sprite lvl1sprite, lvl2sprite;
     };
+    struct HelpContent
+    {
+        sf::Text title, desc, left, right, pause;
+    };
 
     sf::Vector2u m_windowSize;
 
@@ -110,6 +117,7 @@ private:
     NickContent m_nickContent;
     WonContent m_wonContent;
     ChooseContent m_chooseContent;
+    HelpContent m_helpContent;
 };  
 
     

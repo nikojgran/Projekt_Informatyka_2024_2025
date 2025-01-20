@@ -13,6 +13,7 @@ bool DrawManager::InitializeResources(int* m_playerScore)
     InitializeMenuContent();
     InitializePauseContent();
     InitializeChooseContent();
+    InitializeHelpContent();
     InitializePlayer();
     InitializeBall();
 
@@ -29,10 +30,19 @@ void DrawManager::DrawMenu(sf::RenderWindow* window)
 
 void DrawManager::DrawPause(sf::RenderWindow* window)
 {
+    window->draw(m_bgSprite);
     window->draw(m_pauseContent.title);
     window->draw(m_pauseContent.continueOption);
     window->draw(m_pauseContent.menuReturnOption);
     window->draw(m_pauseContent.exitOption);
+}
+
+void DrawManager::DrawGameContent(sf::RenderWindow* window)
+{
+    window->draw(m_bgSprite);
+    window->draw(m_gameContent.level);
+    window->draw(m_gameContent.score);
+    window->draw(m_gameContent.help);
 }
 
 void DrawManager::DrawGameOver(sf::RenderWindow* window)
@@ -62,12 +72,23 @@ void DrawManager::DrawPlayer(sf::RenderWindow* window)
 
 void DrawManager::DrawChoose(sf::RenderWindow* window)
 {
+    window->draw(m_bgSprite);
     window->draw(m_chooseContent.choose);
     window->draw(m_chooseContent.lvl1);
     window->draw(m_chooseContent.lvl2);
     window->draw(m_chooseContent.exit);
     window->draw(m_chooseContent.lvl1sprite);
     window->draw(m_chooseContent.lvl2sprite);
+}
+
+void DrawManager::DrawHelp(sf::RenderWindow* window)
+{
+    window->draw(m_bgSprite);
+    window->draw(m_helpContent.title);
+    window->draw(m_helpContent.desc);
+    window->draw(m_helpContent.left);
+    window->draw(m_helpContent.right);
+    window->draw(m_helpContent.pause);
 }
 
 void DrawManager::MovePlayerLeft(sf::RenderWindow* window)
@@ -166,6 +187,7 @@ void DrawManager::DrawNickInput(sf::RenderWindow* window, std::string* m_current
 {
     SetupText(m_nickContent.m_currentNickText, m_font, "Wpisz swój nick: " + *m_currentNick, 30, sf::Color::White, sf::Text::Regular, 640, 360);
     m_nickContent.m_nickInputText.setPosition(200, 100);
+    window->draw(m_bgSprite);
     window->draw(m_nickContent.m_nickInputText);
 
     // Rysowanie tekstu, który u¿ytkownik wpisuje
@@ -251,6 +273,15 @@ void DrawManager::InitializeMenuContent()
     m_menuContent.exitOption.setPosition(200, 300);
 }
 
+void DrawManager::InitializeHelpContent()
+{
+    SetupText(m_helpContent.title, m_font, "Pomoc", 100, sf::Color::Cyan, sf::Text::Bold, 640, 200);
+    SetupText(m_helpContent.desc, m_font, "Odbijaj pilke paletka i zniszcz wszystkie klocki. \n Sterowanie:", 50, sf::Color::Blue, sf::Text::Regular, 640, 280);
+    SetupText(m_helpContent.left, m_font, "[<-] - przesun platforme w lewo", 50, sf::Color::Blue, sf::Text::Regular, 640, 350);
+    SetupText(m_helpContent.right, m_font, "[->] - przesun platforme w prawo", 50, sf::Color::Blue, sf::Text::Regular, 640, 420);
+    SetupText(m_helpContent.pause, m_font, "[Esc] - Pauza/wznow", 50, sf::Color::Blue, sf::Text::Regular, 640, 490);
+}
+
 void DrawManager::InitializePauseContent()
 {
     m_pauseContent.title = sf::Text("Pauza", m_font, 50);
@@ -297,7 +328,7 @@ void DrawManager::InitializeChooseContent()
 void DrawManager::InitializeGameOver(int *m_playerScore)
 {
     SetupText(m_overContent.over, m_font, "GAME OVER", 100, sf::Color::Red, sf::Text::Bold, 640, 200);
-    SetupText(m_overContent.score, m_font, "Score: " + std::to_string(*m_playerScore), 30, sf::Color::Blue, sf::Text::Regular, 640, 280);
+    SetupText(m_overContent.score, m_font, "Punkty: " + std::to_string(*m_playerScore), 30, sf::Color::Blue, sf::Text::Regular, 640, 280);
     SetupText(m_overContent.exit, m_font, "1. Wyjdz do menu", 30, sf::Color::Blue, sf::Text::Regular, 640, 350);
 
     m_overContent.splash.setPointCount(20);
@@ -336,7 +367,7 @@ void DrawManager::InitializeGameOver(int *m_playerScore)
 void DrawManager::InitializeGameWon(int* m_playerScore)
 {
     SetupText(m_wonContent.won, m_font, "Wygrana!!!", 100, sf::Color::Green, sf::Text::Bold, 640, 200);
-    SetupText(m_wonContent.score , m_font, "Score: " + std::to_string(*m_playerScore), 30, sf::Color::Blue, sf::Text::Regular, 640, 300);
+    SetupText(m_wonContent.score , m_font, "Punkty: " + std::to_string(*m_playerScore), 30, sf::Color::Blue, sf::Text::Regular, 640, 300);
     SetupText(m_wonContent.exit, m_font, "1. Wyjdz do menu", 30, sf::Color::Blue, sf::Text::Regular, 640, 350);
 }
 
@@ -433,6 +464,13 @@ void DrawManager::InitializeBlocks()
     }
 }
 
+void DrawManager::InitializeGameContent(int *m_playerScore, int* m_levelIndex)
+{
+    SetupText(m_gameContent.score, m_font, "Punkty: " + std::to_string(*m_playerScore) , 20, sf::Color::White, sf::Text::Regular, 200, 20);
+    SetupText(m_gameContent.level, m_font, "Poziom: " + std::to_string(*m_levelIndex), 20, sf::Color::White, sf::Text::Regular, 640, 20);
+    SetupText(m_gameContent.help, m_font, "[F1] - Pomoc", 20, sf::Color::White, sf::Text::Regular, 1080, 20);
+}
+
 void DrawManager::LoadLevel(int* levelIndex)
 {
     m_gameContent.m_blocks.clear();  // Wyczyœæ istniej¹ce bloczki
@@ -452,16 +490,3 @@ bool DrawManager::WonGame(int *m_levelIndex)
     return false;
 }
 
-void DrawManager::InitializeGameContent()
-{
-    
-    m_gameContent.score = sf::Text("Punkty:", m_font, 30);
-    m_gameContent.score.setPosition(300, 200);
-      
-    m_gameContent.level = sf::Text("Poziom:", m_font, 30);
-    m_gameContent.level.setPosition(300, 300);
-      
-    m_gameContent.help = sf::Text("[F1] Pomoc", m_font, 30);
-    m_gameContent.help.setPosition(300, 400);
-
-}

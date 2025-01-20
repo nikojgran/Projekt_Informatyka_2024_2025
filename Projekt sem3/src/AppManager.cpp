@@ -4,7 +4,7 @@ AppManager::AppManager() :
     m_window(sf::VideoMode(1280, 720), "Game"),
     m_drawManager(m_window.getSize()),
     m_appState(AppState::MENU),
-    m_levelIndex(2),
+    m_levelIndex(1),
     m_playerScore(0){}
 
 void AppManager::StartApp()
@@ -36,6 +36,8 @@ void AppManager::DispatchState()
             break;
 
         case AppState::GAME:
+            m_drawManager.InitializeGameContent(&m_playerScore, &m_levelIndex);
+            m_drawManager.DrawGameContent(&m_window);
             m_drawManager.DrawPlayer(&m_window);
             m_drawManager.DrawBall(&m_window);
             if (!m_levelLoaded) {
@@ -79,6 +81,9 @@ void AppManager::DispatchState()
         case AppState::CHOOSE:
             m_drawManager.DrawChoose(&m_window);
             break;
+        case AppState::HELP:
+            m_drawManager.DrawHelp(&m_window);
+            break;
     }
 }
 
@@ -119,6 +124,9 @@ void AppManager::DispatchEvent(sf::Event* event)
         case AppState::CHOOSE:
             HandleChooseState(event);
             break;
+        case AppState::HELP:
+            HandleHelpState(event);
+            break;
     }
 }
 
@@ -142,7 +150,9 @@ void AppManager::HandleGameState(sf::Event* event)
         if (event->key.code == sf::Keyboard::Escape) {
             m_appState = AppState::PAUSE;
         }
-
+        if (event->key.code == sf::Keyboard::F1) {
+            m_appState = AppState::HELP;
+        }
     };
 
   
@@ -162,6 +172,10 @@ void AppManager::HandlePauseState(sf::Event* event)
         else if (event->key.code == sf::Keyboard::Num3) {
             ExitApp();
         }
+        else if (event->key.code == sf::Keyboard::Escape) {
+            m_appState = AppState::GAME;
+        }
+        
     }
 }
 
@@ -228,6 +242,16 @@ void AppManager::HandleChooseState(sf::Event* event)
         else if (event->key.code == sf::Keyboard::Num3) {
             m_appState = AppState::MENU;
         }
+    }
+}
+
+void AppManager::HandleHelpState(sf::Event* event)
+{
+    if (event->type == sf::Event::KeyPressed) {
+        if (event->key.code == sf::Keyboard::Escape) {
+            m_appState = AppState::GAME;
+        }
+
     }
 }
 
