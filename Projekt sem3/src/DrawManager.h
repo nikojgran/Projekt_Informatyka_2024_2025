@@ -118,8 +118,4 @@ private:
     WonContent m_wonContent;
     ChooseContent m_chooseContent;
     HelpContent m_helpContent;
-};  
-
-    
-
-
+};

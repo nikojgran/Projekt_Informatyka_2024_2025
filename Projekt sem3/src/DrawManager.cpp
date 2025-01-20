@@ -275,11 +275,11 @@ void DrawManager::InitializeMenuContent()
 
 void DrawManager::InitializeHelpContent()
 {
-    SetupText(m_helpContent.title, m_font, "Pomoc", 100, sf::Color::Cyan, sf::Text::Bold, 640, 200);
-    SetupText(m_helpContent.desc, m_font, "Odbijaj pilke paletka i zniszcz wszystkie klocki. \n Sterowanie:", 50, sf::Color::Blue, sf::Text::Regular, 640, 280);
-    SetupText(m_helpContent.left, m_font, "[<-] - przesun platforme w lewo", 50, sf::Color::Blue, sf::Text::Regular, 640, 350);
-    SetupText(m_helpContent.right, m_font, "[->] - przesun platforme w prawo", 50, sf::Color::Blue, sf::Text::Regular, 640, 420);
-    SetupText(m_helpContent.pause, m_font, "[Esc] - Pauza/wznow", 50, sf::Color::Blue, sf::Text::Regular, 640, 490);
+    SetupText(m_helpContent.title, m_font, "Pomoc", 100, sf::Color::Cyan, sf::Text::Bold, 640, 150);
+    SetupText(m_helpContent.desc, m_font, "Odbijaj pilke paletka i zniszcz wszystkie klocki. \n Sterowanie:", 30, sf::Color::Blue, sf::Text::Regular, 640, 280);
+    SetupText(m_helpContent.left, m_font, "[<-] - przesun platforme w lewo", 50, sf::Color::Blue, sf::Text::Regular, 640, 450);
+    SetupText(m_helpContent.right, m_font, "[->] - przesun platforme w prawo", 50, sf::Color::Blue, sf::Text::Regular, 640, 520);
+    SetupText(m_helpContent.pause, m_font, "[Esc] - Pauza/wznow", 50, sf::Color::Blue, sf::Text::Regular, 640, 590);
 }
 
 void DrawManager::InitializePauseContent()

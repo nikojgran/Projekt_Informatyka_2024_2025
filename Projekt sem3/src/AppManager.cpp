@@ -43,15 +43,18 @@ void AppManager::DispatchState()
             if (!m_levelLoaded) {
                 m_drawManager.LoadLevel(&m_levelIndex);
                 m_levelLoaded = true;
+                m_gameStarted = true;
             }
             m_drawManager.DrawBlocks(&m_window);
                 
             
             if (m_drawManager.MoveBall(&m_window, &m_playerScore)) {
                 m_appState = AppState::GAME_OVER;
+                
             }
             if (m_drawManager.WonGame(&m_levelIndex)) {
                 m_appState = AppState::WON;
+                
                 m_drawManager.LoadLevel(&m_levelIndex);
                 
             }
@@ -67,6 +70,7 @@ void AppManager::DispatchState()
             m_drawManager.DrawGameOver(&m_window);
             m_levelIndex = 1;
             m_levelLoaded = false;
+            m_gameStarted = false;
             break;
 
         case AppState::NICK:
@@ -76,6 +80,8 @@ void AppManager::DispatchState()
         case AppState::WON:
             m_drawManager.InitializeGameWon(&m_playerScore);
             m_drawManager.DrawGameWon(&m_window);
+            m_levelLoaded = false;
+            m_gameStarted = false;
             break;
 
         case AppState::CHOOSE:
@@ -133,9 +139,14 @@ void AppManager::DispatchEvent(sf::Event* event)
 void AppManager::HandleMenuState(sf::Event* event)
 {
     if (event->type == sf::Event::KeyPressed) {
-        if (event->key.code == sf::Keyboard::Num1) {
+        if (event->key.code == sf::Keyboard::Num1 && m_gameStarted == false){
+
             m_appState = AppState::NICK;
 
+        }
+        else if (event->key.code == sf::Keyboard::Num1 && m_gameStarted == true) {
+
+            m_appState = AppState::GAME;
         }
         else if (event->key.code == sf::Keyboard::Num2) {
             ExitApp();

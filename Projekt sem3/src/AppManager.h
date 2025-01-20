@@ -39,18 +39,14 @@ private:
         WON
     };
     
-    struct PlayerScore {
-        std::string nick;
-        int score;
-    };
 
     sf::RenderWindow m_window;
     int m_levelIndex;
+    bool m_gameStarted = false;
     DrawManager m_drawManager;
     AppState m_appState;
     std::string m_playerNick;
     int m_playerScore;
     std::string m_currentNick;
-    std::vector<PlayerScore> m_leaderboard;
 };
 
